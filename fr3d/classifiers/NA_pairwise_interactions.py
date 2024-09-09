@@ -137,37 +137,37 @@ def focus_basepair_cutoffs(basepair_cutoffs,interactions):
 
 def myTimer(state,data={}):
 
-    # add elapsed time to the current state of the timer
-    if "currentState" in data:
-        currentState = data["currentState"]
-        data[currentState] += time() - data["lastTime"]
-
-    if state == "summary":
-        total = 0.000000000001
-        for state in data["allStates"]:
-            if not state == "lastTime" and not state == "currentState":
-                total += data[state]
-
-        print("Summary of time taken:")
-        for state in data["allStates"]:
-            if not state == "lastTime" and not state == "currentState":
-                print("%-31s: %10.3f seconds %10.3f minutes %10.3f%% of total" % (state,data[state],data[state]/60,100*data[state]/total))
-
-        print("%-31s: %10.3f seconds %10.3f minutes %10.3f%% of total" % ("Total",total,total/60,100))
-
-
-    elif not state in data:
-        data[state] = 0
-        # keep track of states and the order in which they were seen
-        if "allStates" in data:
-            data["allStates"].append(state)
-        else:
-            data["allStates"] = [state]
-
-    # change to the state just starting now
-    data["currentState"] = state
-    data["lastTime"] = time()
-
+    # # add elapsed time to the current state of the timer
+    # if "currentState" in data:
+    #     currentState = data["currentState"]
+    #     data[currentState] += time() - data["lastTime"]
+    #
+    # if state == "summary":
+    #     total = 0.000000000001
+    #     for state in data["allStates"]:
+    #         if not state == "lastTime" and not state == "currentState":
+    #             total += data[state]
+    #
+    #     print("Summary of time taken:")
+    #     for state in data["allStates"]:
+    #         if not state == "lastTime" and not state == "currentState":
+    #             print("%-31s: %10.3f seconds %10.3f minutes %10.3f%% of total" % (state,data[state],data[state]/60,100*data[state]/total))
+    #
+    #     # print("%-31s: %10.3f seconds %10.3f minutes %10.3f%% of total" % ("Total",total,total/60,100))
+    #
+    #
+    # elif not state in data:
+    #     data[state] = 0
+    #     # keep track of states and the order in which they were seen
+    #     if "allStates" in data:
+    #         data["allStates"].append(state)
+    #     else:
+    #         data["allStates"] = [state]
+    #
+    # # change to the state just starting now
+    # data["currentState"] = state
+    # data["lastTime"] = time()
+    #
     return data
 
 
@@ -274,12 +274,12 @@ def load_structure(filename,pdbid=""):
             with gzip.open(filename, rm) as raw:
                 from fr3d.pdb.pdb_reader import PDBStructure
                 structure = PDBStructure(pdbid,raw).structures()
-                print("  No symmetry operators applied to .pdb files")
+                # print("  No symmetry operators applied to .pdb files")
         elif filename.lower().endswith('.pdb'):
             with open(filename, rm) as raw:
                 from fr3d.pdb.pdb_reader import PDBStructure
                 structure = PDBStructure(pdbid,raw).structures()
-                print("  No symmetry operators applied to .pdb files")
+                # print("  No symmetry operators applied to .pdb files")
 
         message.append("Loaded " + filename)
         return structure, message
@@ -568,25 +568,25 @@ def check_for_two_interactions_on_same_edge(unit_id_to_basepairs,get_datapoint=F
 
                         if get_datapoint:
                             unit_id_list = unit_id
-                            print("Base %s makes multiple basepairs listed %d and %d below" % (unit_id,i,j))
+                            # print("Base %s makes multiple basepairs listed %d and %d below" % (unit_id,i,j))
 
                             for bp in basepairs:
-                                print(bp)
+                                # print(bp)
                                 interaction, quality, u1 = bp
                                 unit_id_list += "," + u1
 
-                            print("http://rna.bgsu.edu/rna3dhub/display3D/unitid/%s" % unit_id_list)
-                            print('Common atoms %s' % common_atoms)
-
+                            # print("http://rna.bgsu.edu/rna3dhub/display3D/unitid/%s" % unit_id_list)
+                            # print('Common atoms %s' % common_atoms)
+                            #
                         atom_names = "".join(common_atoms)
                         if "H" in atom_names or len(common_atoms) > 1:
 
-                            if get_datapoint:
-                                if "H" in atom_names:
-                                    print('Common atoms %s include a hydrogen, checking for conflicts' % common_atoms)
-                                else:
-                                    print('Two or more common atoms %s, checking for conflicts' % common_atoms)
-
+                            # if get_datapoint:
+                            #     if "H" in atom_names:
+                            #         print('Common atoms %s include a hydrogen, checking for conflicts' % common_atoms)
+                            #     else:
+                            #         print('Two or more common atoms %s, checking for conflicts' % common_atoms)
+                            #
                             # conflicting basepairs
                             if interaction_1.startswith("n") and interaction_2.startswith("n"):
                                 # both near, remove the worse one if it's pretty bad
@@ -594,40 +594,40 @@ def check_for_two_interactions_on_same_edge(unit_id_to_basepairs,get_datapoint=F
                                     if quality_2['cutoff_distance'] > 0.5 * near_discrepancy_cutoff:
                                         remove_pairs.add((unit_id,unit_id_2))
                                         remove_pairs.add((unit_id_2,unit_id))
-                                        if get_datapoint:
-                                            print("Removing",unit_id,interaction_2,unit_id_2,quality_2['cutoff_distance'],"\n")
+                                        # if get_datapoint:
+                                            # print("Removing",unit_id,interaction_2,unit_id_2,quality_2['cutoff_distance'],"\n")
                                 else:
                                     if quality_1['cutoff_distance'] > 0.5 * near_discrepancy_cutoff:
                                         remove_pairs.add((unit_id,unit_id_1))
                                         remove_pairs.add((unit_id_1,unit_id))
-                                        if get_datapoint:
-                                            print("Removing",unit_id,interaction_1,unit_id_1,quality_1['cutoff_distance'],"\n")
+                                        # if get_datapoint:
+                                            # print("Removing",unit_id,interaction_1,unit_id_1,quality_1['cutoff_distance'],"\n")
 
                             elif not interaction_1.startswith("n") and not interaction_2.startswith("n"):
                                 # both true, make one near
                                 if quality_1['max_gap'] < quality_2['max_gap']:
                                     make_near_pairs.add((unit_id,unit_id_2))
                                     make_near_pairs.add((unit_id_2,unit_id))
-                                    if get_datapoint:
-                                        print("Demoting",unit_id,interaction_2,unit_id_2,"\n")
+                                    # if get_datapoint:
+                                        # print("Demoting",unit_id,interaction_2,unit_id_2,"\n")
                                 else:
                                     make_near_pairs.add((unit_id,unit_id_1))
                                     make_near_pairs.add((unit_id_1,unit_id))
-                                    if get_datapoint:
-                                        print("Demoting",unit_id,interaction_1,unit_id_1,"\n")
+                                    # if get_datapoint:
+                                        # print("Demoting",unit_id,interaction_1,unit_id_1,"\n")
 
                             else:
                                 # one near, one true, remove the near one if it's bad
                                 if quality_2['cutoff_distance'] > 0.5 * near_discrepancy_cutoff:
                                     remove_pairs.add((unit_id,unit_id_2))
                                     remove_pairs.add((unit_id_2,unit_id))
-                                    if get_datapoint:
-                                        print("Removing",unit_id,interaction_2,unit_id_2,quality_2['cutoff_distance'],"\n")
+                                    # if get_datapoint:
+                                        # print("Removing",unit_id,interaction_2,unit_id_2,quality_2['cutoff_distance'],"\n")
                                 elif quality_1['cutoff_distance'] > 0.5 * near_discrepancy_cutoff:
                                     remove_pairs.add((unit_id,unit_id_1))
                                     remove_pairs.add((unit_id_1,unit_id))
-                                    if get_datapoint:
-                                        print("Removing",unit_id,interaction_1,unit_id_1,quality_1['cutoff_distance'],"\n")
+                                    # if get_datapoint:
+                                        # print("Removing",unit_id,interaction_1,unit_id_1,quality_1['cutoff_distance'],"\n")
 
     return remove_pairs, make_near_pairs
 
@@ -664,15 +664,15 @@ def annotate_nt_nt_interactions(bases, center_center_distance_cutoff, baseCubeLi
                 for nt1 in baseCubeList[nt1key]:        # first nt of a potential pair
 
                     if len(nt1.centers["base"]) < 3:
-                        print("  Missing base center for %s" % nt1.unit_id())
-                        print(nt1.centers["base"])
+                        # print("  Missing base center for %s" % nt1.unit_id())
+                        # print(nt1.centers["base"])
                         continue
 
                     parent1 = get_parent(nt1.sequence)   # map modified nts to parent nt
                     gly1 = get_glycosidic_atom_coordinates(nt1,parent1)
 
                     if len(gly1) < 3:
-                        print("  Missing glycosidic atom for %s" % nt1.unit_id())
+                        # print("  Missing glycosidic atom for %s" % nt1.unit_id())
                         continue
 
                     number1 = nt1.number                 # nucleotide number
@@ -688,8 +688,8 @@ def annotate_nt_nt_interactions(bases, center_center_distance_cutoff, baseCubeLi
                                 continue
 
                         if len(nt2.centers["base"]) < 3:
-                            print("  Missing base center for %s" % nt2.unit_id())
-                            print(nt2.centers["base"])
+                            # print("  Missing base center for %s" % nt2.unit_id())
+                            # print(nt2.centers["base"])
                             continue
 
                         # vector displacement between base centers
@@ -833,7 +833,7 @@ def annotate_nt_nt_interactions(bases, center_center_distance_cutoff, baseCubeLi
 
                         gly2 = get_glycosidic_atom_coordinates(nt2,parent2)
                         if len(gly2) < 3:
-                            print("  Missing glycosidic atom for %s" % nt2.unit_id())
+                            # print("  Missing glycosidic atom for %s" % nt2.unit_id())
                             continue
 
                         # always annotate cWW basepairs to be able to calculate crossing numbers
@@ -953,7 +953,7 @@ def annotate_nt_nt_interactions(bases, center_center_distance_cutoff, baseCubeLi
                                 conflict_message = ""
                             else:
                                 # both true, but different
-                                print("No clear way to decide between the two annotations")
+                                # print("No clear way to decide between the two annotations")
                                 interaction21 = ""      # break the tie
 
                             if len(conflict_message) > 0:
@@ -962,7 +962,7 @@ def annotate_nt_nt_interactions(bases, center_center_distance_cutoff, baseCubeLi
                                 else:
                                     conflict_message += "  Using %s\n" % interaction12_reversed
 
-                                print(conflict_message)
+                                # print(conflict_message)
 
                                 # record conflicting interactions if desired
                                 if False and get_datapoint:
@@ -1043,13 +1043,13 @@ def annotate_nt_nt_interactions(bases, center_center_distance_cutoff, baseCubeLi
                     category_to_interactions['basepair_detail'].add(interaction)
                     category_to_interactions['basepair_detail'].add(interaction_reversed)
 
-    print("  Found %d nucleotide-nucleotide interactions" % count_pair)
+    # print("  Found %d nucleotide-nucleotide interactions" % count_pair)
 
     if False:
         print("  Maximum screen distance for actual contacts is %8.4f" % max_center_center_distance)
 
     # calculate and save crossing numbers for each annoated interaction
-    timerData = myTimer("Calculate crossing",timerData)
+    # timerData = myTimer("Calculate crossing",timerData)
     interaction_to_list_of_tuples = calculate_crossing_numbers(bases,interaction_to_pair_list)
 
     return interaction_to_list_of_tuples, category_to_interactions, timerData, pair_to_data
@@ -1523,7 +1523,7 @@ def check_convex_hull_atoms(x,y,z, parent):
                                 if  1.687080*x +  1.205236*y +  3.097805 > 0:  # Left of C6-C1'
                                     inside = True
         else:
-            print("Unrecognized parent " + parent + " in function check_convex_hull_atoms. FR3D is currently unable to recognize this modified base.")
+            # print("Unrecognized parent " + parent + " in function check_convex_hull_atoms. FR3D is currently unable to recognize this modified base.")
             return False
     return inside
 
@@ -1593,7 +1593,7 @@ def get_base_atom_names(sequence):
                 base_atoms.add(parent_atom_to_modified[sequence][parent_atom])
 
     else:
-        print('Not able to identify base atoms for %s' % sequence)
+        # print('Not able to identify base atoms for %s' % sequence)
         base_atoms = set()
 
     return base_atoms
@@ -1634,13 +1634,13 @@ def check_base_base_stacking(nt1, nt2, parent1, parent2, datapoint):
     nt1baseAtomsList = get_base_atom_names(nt1.sequence)
 
     if len(nt1baseAtomsList) == 0:
-        print("Can't check base stacking for %s and %s" % (nt1.unit_id(),nt2.unit_id()))
+        # print("Can't check base stacking for %s and %s" % (nt1.unit_id(),nt2.unit_id()))
         return "", datapoint, ""
 
     nt2baseAtomsList = get_base_atom_names(nt2.sequence)
 
     if len(nt2baseAtomsList) == 0:
-        print("Can't check base stacking for %s and %s" % (nt1.unit_id(),nt2.unit_id()))
+        # print("Can't check base stacking for %s and %s" % (nt1.unit_id(),nt2.unit_id()))
         return "", datapoint, ""
 
     #Variables to flag if an atom from nt2 was projected onto nt1 and to check if nt1 atoms project onto nt2
@@ -1920,7 +1920,8 @@ def check_base_backbone_interactions(nt1,nt2,previousO3,parent1,parent2,datapoin
                 if abs(p_standard[2]) > 4.5: # phosphorus far from plane
                     phosphateOxygens = []
             except:
-                print("Phosphorus calculation failed for %s,%s" % (nt1.unit_id(),nt2.unit_id()))
+                pass
+                # print("Phosphorus calculation failed for %s,%s" % (nt1.unit_id(),nt2.unit_id()))
 
         # Loop through each donor-hydrogen site on base 1
         for sites in NAbaseMassiveAndHydrogens[parent1]:
@@ -2330,7 +2331,7 @@ def check_sugar_ribose(nt1,nt2,parent1,datapoint):
             # trans case, base flipped over compared to cSS
             annotation = 'tSR'
     else:
-        print('Not able to calculate orientation of SR annotation for %s-%s' % (nt1.unit_id(),nt2.unit_id()))
+        # print('Not able to calculate orientation of SR annotation for %s-%s' % (nt1.unit_id(),nt2.unit_id()))
         return "", datapoint
 
     if datapoint:
@@ -2664,9 +2665,9 @@ def check_basepair_cutoffs(nt1,nt2,pair_data,cutoffs,hydrogen_bonds,datapoint):
         elif pair_data['min_distance'] > 3.75 and not cSS_one_hbond:
             # matches a true category but the bases are too far apart for a good hydrogen bond
             near_match.append((interaction,subcategory,cutoff_distance))
-            if datapoint:
-                print('Switched from true to near')
-                print("http://rna.bgsu.edu/rna3dhub/display3D/unitid/%s,%s" % (nt1.unit_id(),nt2.unit_id()))
+            # if datapoint:
+                # print('Switched from true to near')
+                # print("http://rna.bgsu.edu/rna3dhub/display3D/unitid/%s,%s" % (nt1.unit_id(),nt2.unit_id()))
 
         else:
             # true pair
@@ -2727,8 +2728,8 @@ def check_basepair_cutoffs(nt1,nt2,pair_data,cutoffs,hydrogen_bonds,datapoint):
             return LW, subcategory, quality, datapoint
 
         else:
-            print("  http://rna.bgsu.edu/rna3dhub/display3D/unitid/%s,%s" % (nt1.unit_id(),nt2.unit_id()))
-            print("  Multiple annotations meet all cutoffs, %s" % LW_remaining)
+            # print("  http://rna.bgsu.edu/rna3dhub/display3D/unitid/%s,%s" % (nt1.unit_id(),nt2.unit_id()))
+            # print("  Multiple annotations meet all cutoffs, %s" % LW_remaining)
             # loop over hydrogen bond sets from best to worst
             for LW,bond_counter,checked_counter,max_badness in LW_bond_rank:
                 for LW2,subcategory,cutoff_distance in match:
@@ -2739,10 +2740,10 @@ def check_basepair_cutoffs(nt1,nt2,pair_data,cutoffs,hydrogen_bonds,datapoint):
                             datapoint['basepair_subcategory'] = subcategory
                             #datapoint['hbond'] = LW_bonds[LW]
                             #datapoint['hbond_messages'] = LW_bond_messages[LW]
-                        print("  Using %s\n" % LW)
+                        # print("  Using %s\n" % LW)
                         return LW, subcategory, quality, datapoint
 
-            print("  No match between all cutoffs and all hydrogen bonds, using first match")
+            # print("  No match between all cutoffs and all hydrogen bonds, using first match")
             interaction,subcategory,cutoff_distance = match[0]
             if cutoff_distance > 0 and not "n" in interaction:
                 LW = "n" + interaction
@@ -2987,7 +2988,8 @@ def map_PDB_list_to_PDB_IFE_dict(PDB_list):
             else:
                 PDB_IFE_Dict[PDB] = ""            # indicates to process the whole PDB file
         except:
-            print("Not able to process %s" % PDB)
+            raise Exception
+            # print("Not able to process %s" % PDB)
 
     # remove leading + signs
     for PDB in PDB_IFE_Dict:
@@ -3051,7 +3053,7 @@ def write_unit_data_file(PDB,unit_data_path,structure):
                 # Use 2 for "HIGHEST_PROTOCOL" for Python 2.3+ compatibility.
                 pickle.dump(rsset, fh, 2)
 
-            print("  Wrote unit data file %s" % filename)
+            # print("  Wrote unit data file %s" % filename)
 
 
 def write_txt_output_file(outputNAPairwiseInteractions,pdbid,interaction_to_list_of_tuples,categories,category_to_interactions):
@@ -3070,7 +3072,6 @@ def write_txt_output_file(outputNAPairwiseInteractions,pdbid,interaction_to_list
     for category in categories:
         if category == "near":
             continue
-        filename = os.path.join(outputNAPairwiseInteractions,pdbid + "_" + category + ".txt")
 
 
         quads_to_write = []
@@ -3088,9 +3089,12 @@ def write_txt_output_file(outputNAPairwiseInteractions,pdbid,interaction_to_list
                     quads_to_write.append((a,inter,b,c))
 
         ordered = sorted(quads_to_write, key=lambda x: (x[0].split("|")[1],x[0].split("|")[2],int(x[0].split("|")[4]),x[1]))
-        with open(filename,'w') as f:
-            for a,b,c,d in ordered:
-                f.write("%s\t%s\t%s\t%s\n" % (a,b,c,d))
+        output=[]
+        for a,b,c,d in ordered:
+            output.append("%s\t%s\t%s\t%s\n" % (a,b,c,d))
+        print(''.join(output))
+
+
 
 def write_ebi_json_output_file(outputNAPairwiseInteractions,pdbid,interaction_to_list_of_tuples,categories,category_to_interactions,chain,unit_id_to_sequence_position,modified):
     """
@@ -3103,7 +3107,6 @@ def write_ebi_json_output_file(outputNAPairwiseInteractions,pdbid,interaction_to
 
     # loop over types of output files requested
     for category in categories.keys():
-        filename = os.path.join(outputNAPairwiseInteractions,pdbid + "_" + chain + "_" + category + ".json")
 
         output = {}
         output["pdb_id"] = pdbid
@@ -3140,14 +3143,12 @@ def write_ebi_json_output_file(outputNAPairwiseInteractions,pdbid,interaction_to
 
         output["annotations"] = annotations
 
-        #print(json.dumps(output))
+        print(json.dumps(output))
 
-        with open(filename,'w') as f:
-            f.write(json.dumps(output))
 
 
 #=======================================================================
-def generatePairwiseAnnotation(entry_id, chain_id, inputPath, outputNAPairwiseInteractions, category, output_format):
+def generatePairwiseAnnotation(entry_id, chain_id, category, output_format):
 
     if isinstance(entry_id,str):
         entry_id = [entry_id]
@@ -3173,16 +3174,16 @@ def generatePairwiseAnnotation(entry_id, chain_id, inputPath, outputNAPairwiseIn
     else:
         categories['basepair'] = ['cWW']  # only annotate cWW, for crossing number
 
-    # check existence of input path
-    if len(inputPath) > 0 and not os.path.exists(inputPath):
-        print("Attempting to create input path %s" % inputPath)
-        os.mkdir(inputPath)
-
-    # check existence of output path
-    if len(outputNAPairwiseInteractions) > 0 and not os.path.exists(outputNAPairwiseInteractions):
-        print("Attempting to create output path %s" % outputNAPairwiseInteractions)
-        os.mkdir(outputNAPairwiseInteractions)
-
+    # # check existence of input path
+    # if len(inputPath) > 0 and not os.path.exists(inputPath):
+    #     print("Attempting to create input path %s" % inputPath)
+    #     os.mkdir(inputPath)
+    #
+    # # check existence of output path
+    # if len(outputNAPairwiseInteractions) > 0 and not os.path.exists(outputNAPairwiseInteractions):
+    #     print("Attempting to create output path %s" % outputNAPairwiseInteractions)
+    #     os.mkdir(outputNAPairwiseInteractions)
+    #
     # process additional arguments as PDB files
     PDBs = []  # list of (path,filename) entries
     entries = entry_id
@@ -3190,10 +3191,10 @@ def generatePairwiseAnnotation(entry_id, chain_id, inputPath, outputNAPairwiseIn
         # identify path to the PDB file, if any
         path_split = os.path.split(entry)   # produces a tuple
 
-        if len(path_split[0]) > 0:
-            PDBs.append(path_split)
-        else:
-            PDBs.append((inputPath,entry))
+        # if len(path_split[0]) > 0:
+        PDBs.append(path_split)
+        # else:
+        # PDBs.append((inputPath,entry))
 
     # annotate each PDB file
     timerData = myTimer("start")
@@ -3202,7 +3203,7 @@ def generatePairwiseAnnotation(entry_id, chain_id, inputPath, outputNAPairwiseIn
 
     if chain_id:
         if len(entry_id) > 1:
-            print("chain argument can only be used with a single PDB file")
+            # print("chain argument can only be used with a single PDB file")
             PDBs = []
         else:
             chains = chain_id.split(",")
@@ -3227,7 +3228,7 @@ def generatePairwiseAnnotation(entry_id, chain_id, inputPath, outputNAPairwiseIn
 
         filename = os.path.join(path,PDB)
 
-        print("Reading file %s, which is number %d out of %d" % (filename, counter, len(PDBs)))
+        # print("Reading file %s, which is number %d out of %d" % (filename, counter, len(PDBs)))
         timerData = myTimer("Reading CIF files",timerData)
 
         # suppress error messages, but report failures at the end
@@ -3239,8 +3240,8 @@ def generatePairwiseAnnotation(entry_id, chain_id, inputPath, outputNAPairwiseIn
             continue
 
         interaction_to_list_of_tuples, category_to_interactions, timerData, pair_to_data = annotate_nt_nt_in_structure(structure,categories,focused_basepair_cutoffs,ideal_hydrogen_bonds,chains,timerData)
-        timerData = myTimer("Recording interactions",timerData)
-        print("  Recording interactions in %s" % outputNAPairwiseInteractions)
+        # timerData = myTimer("Recording interactions",timerData)
+        # print("  Recording interactions in %s" % outputNAPairwiseInteractions)
 
         if output_format == 'txt':
             write_txt_output_file(outputNAPairwiseInteractions,pdbid,interaction_to_list_of_tuples,categories,category_to_interactions)
@@ -3271,32 +3272,32 @@ def generatePairwiseAnnotation(entry_id, chain_id, inputPath, outputNAPairwiseIn
             for chain in list(chain_unit_id_to_sequence_position.keys()):
                 write_ebi_json_output_file(outputNAPairwiseInteractions,pdbid,interaction_to_list_of_tuples,categories, category_to_interactions, chain, chain_unit_id_to_sequence_position[chain],chain_modified[chain])
 
-        else:
-            print('Output format %s not recognized' % output_format)
+        # else:
+            # print('Output format %s not recognized' % output_format)
 
-    myTimer("summary",timerData)
-
-    if len(failed_structures) > 0:
-        print("Error messages:")
-        for message in failed_structures:
-            print("%s %s" % message)
-    else:
-        print("All files read successfully")
-
+    # myTimer("summary",timerData)
+    #
+    # if len(failed_structures) > 0:
+    #     print("Error messages:")
+    #     for message in failed_structures:
+    #         print("%s %s" % message)
+    # else:
+    #     print("All files read successfully")
+    #
     # note status of stacking annotations
-    if 'stacking' in categories:
-        print("Stacking annotations are not yet finalized")
-
-    if 'basepair' in categories:
-        print("Basepair annotations are not yet finalized")
+    # if 'stacking' in categories:
+    #     print("Stacking annotations are not yet finalized")
+    #
+    # if 'basepair' in categories:
+    #     print("Basepair annotations are not yet finalized")
 
 if __name__=="__main__":
 
     # allow user to specify input and output paths
     parser = argparse.ArgumentParser()
     parser.add_argument('PDBfiles', type=str, nargs='+', help='.cif filename(s)')
-    parser.add_argument('-o', "--output", help="Output Location of Pairwise Interactions")
-    parser.add_argument('-i', "--input", help='Input Path')
+    # parser.add_argument('-o', "--output", help="Output Location of Pairwise Interactions")
+    # parser.add_argument('-i', "--input", help='Input Path')
     parser.add_argument('-c', "--category", help='Interaction category or categories (basepair,stacking,sO,backbone,coplanar,basepair_detail,covalent,sugar_ribose,near)')
     parser.add_argument('-f', "--format", help='Output format (txt,ebi_json)')
     parser.add_argument("--chain", help='Chain or chains separated by commas, no spaces; only for one PDB file')
@@ -3305,17 +3306,17 @@ if __name__=="__main__":
     args = parser.parse_args()
 
     # Following if statements deal with command line arguments.
-    if args.input:
-        inputPath = args.input
-    else:
-        if not inputPath:
-            inputPath = ""
+    # if args.input:
+    #     inputPath = args.input
+    # else:
+    #     if not inputPath:
+    #         inputPath = ""
 
-    if args.output:
-        outputNAPairwiseInteractions = args.output     # set output path
-    else:
-        if not outputNAPairwiseInteractions:
-            outputNAPairwiseInteractions = ""
+    # if args.output:
+    #     outputNAPairwiseInteractions = args.output     # set output path
+    # else:
+    #     if not outputNAPairwiseInteractions:
+    #         outputNAPairwiseInteractions = ""
 
     if args.format:
         outputFormat = args.format
@@ -3332,7 +3333,7 @@ if __name__=="__main__":
     else:
         category = 'basepair'
 
-    entry_id = args.PDBfiles
+    entry_path = args.PDBfiles
 
-    generatePairwiseAnnotation(entry_id, chain_id, inputPath, outputNAPairwiseInteractions, category, outputFormat)
+    generatePairwiseAnnotation(entry_path, chain_id, category, outputFormat)
 

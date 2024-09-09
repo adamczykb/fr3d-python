@@ -1,0 +1,4 @@
+str|1|A|C|873	cWW	str|1|A|G|880	0
+str|1|A|G|880	cWW	str|1|A|C|873	0
+str|1|A|G|899	tSS	str|1|A|A|1380	0
+str|1|A|A|1380	tSS	str|1|A|G|899	0
