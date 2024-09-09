@@ -3124,22 +3124,31 @@ def write_ebi_json_output_file(outputNAPairwiseInteractions,pdbid,interaction_to
                 for a,b,c in interaction_to_list_of_tuples[interaction]:
                     fields1 = a.split("|")
                     fields2 = b.split("|")
-                    if fields1[2] == chain and fields2[2] == chain:
-                        if unit_id_to_sequence_position[a] < unit_id_to_sequence_position[b]:
-                            ann = {}
-                            ann["seq_id1"]  = str(unit_id_to_sequence_position[a])
-                            ann["3d_id1"]   = fields1[4]
-                            ann["nt1"]      = fields1[3]
-                            ann["unit1"]    = fields1[3]
-                            ann["bp"]       = inter
-                            ann["seq_id2"]  = str(unit_id_to_sequence_position[b])
-                            ann["nt2"]      = fields2[3]
-                            ann["unit2"]    = fields2[3]
-                            ann["3d_id2"]   = fields2[4]
-                            ann["crossing"] = str(c)
-                            #{"seq_id1":"1","3d_id1":"13","nt1":"C","bp":"cWW","seq_id2":"71","nt2":"G","3d_id2":"83","crossing":"0"}
+                    if unit_id_to_sequence_position[a] < unit_id_to_sequence_position[b]:
+                        ann = {}
+                        ann["seq_id1"]  = str(unit_id_to_sequence_position[a])
+                        ann["3d_id1"]   = fields1[4]
+                        ann["nt1"]      = fields1[3]
+                        ann["chain1"]    = fields1[2]
+                        try:
+                            ann['icode1']=fields1[7]
+                        except:
+                            ann['icode1']='?'
+                        ann["bp"]       = inter
+                        ann["seq_id2"]  = str(unit_id_to_sequence_position[b])
+                        ann["nt2"]      = fields2[3]
+                        ann["chain2"]    = fields2[2]
+                        ann["3d_id2"]   = fields2[4]
+                        ann["crossing"] = str(c)
 
-                            annotations.append(ann)
+                        try:
+                            ann['icode2']=fields2[7]
+                        except:
+                            ann['icode2']='?'
+
+                        #{"seq_id1":"1","3d_id1":"13","nt1":"C","bp":"cWW","seq_id2":"71","nt2":"G","3d_id2":"83","crossing":"0"}
+
+                        annotations.append(ann)
 
         output["annotations"] = annotations
 
@@ -3242,7 +3251,6 @@ def generatePairwiseAnnotation(entry_id, chain_id, category, output_format):
         interaction_to_list_of_tuples, category_to_interactions, timerData, pair_to_data = annotate_nt_nt_in_structure(structure,categories,focused_basepair_cutoffs,ideal_hydrogen_bonds,chains,timerData)
         # timerData = myTimer("Recording interactions",timerData)
         # print("  Recording interactions in %s" % outputNAPairwiseInteractions)
-
         if output_format == 'txt':
             write_txt_output_file(outputNAPairwiseInteractions,pdbid,interaction_to_list_of_tuples,categories,category_to_interactions)
         elif output_format == 'ebi_json':
@@ -3250,7 +3258,6 @@ def generatePairwiseAnnotation(entry_id, chain_id, category, output_format):
                 bases = structure.residues(chain = chains, type = ["RNA linking","DNA linking"])  # load all RNA/DNA nucleotides
             else:
                 bases = structure.residues(type = ["RNA linking","DNA linking"])  # load all RNA/DNA nucleotides
-
             chain_unit_id_to_sequence_position = {}
             chain_modified = {}
             for base in bases:
@@ -3263,10 +3270,15 @@ def generatePairwiseAnnotation(entry_id, chain_id, category, output_format):
                 fields = base.unit_id().split('|')
                 if not fields[3] in ['A','C','G','U','DA','DC','DG','DT']:
                     modif = {}
+                    print(fields)
                     modif['seq_id'] = str(base.index)
                     modif['nt1'] = fields[3]
                     modif['unit1'] = fields[3]
                     modif['3d_id'] = fields[4]
+                    try:
+                        modif['icode1']=fields[5]
+                    except:
+                        modif['icode1']='?'
                     chain_modified[chain].append(modif)
 
             for chain in list(chain_unit_id_to_sequence_position.keys()):
