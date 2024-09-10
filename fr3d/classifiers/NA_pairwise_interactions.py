@@ -3152,7 +3152,7 @@ def write_ebi_json_output_file(outputNAPairwiseInteractions,pdbid,interaction_to
 
         output["annotations"] = annotations
 
-        print(json.dumps(output))
+        print(json.dumps(output),file=sys.stderr)
 
 
 
