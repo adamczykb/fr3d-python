@@ -25,7 +25,7 @@ import sys
 import os
 from time import time
 import urllib
-
+import json
 # import the version of urlretrieve appropriate to the Python version
 if sys.version_info[0] < 3:
     from urllib import urlretrieve as urlretrieve
@@ -3153,8 +3153,7 @@ def write_ebi_json_output_file(outputNAPairwiseInteractions,pdbid,interaction_to
 
         output["annotations"] = annotations
 
-        print(json.dumps(output),file=sys.stderr)
-
+        return output
 
 
 #=======================================================================
@@ -3281,9 +3280,10 @@ def generatePairwiseAnnotation(entry_id, chain_id, category, output_format):
                     except:
                         modif['icode1']='?'
                     chain_modified[chain].append(modif)
-
+            output=[]
             for chain in list(chain_unit_id_to_sequence_position.keys()):
-                write_ebi_json_output_file(outputNAPairwiseInteractions,pdbid,interaction_to_list_of_tuples,categories, category_to_interactions, chain, chain_unit_id_to_sequence_position[chain],chain_modified[chain])
+                output.append(write_ebi_json_output_file(outputNAPairwiseInteractions,pdbid,interaction_to_list_of_tuples,categories, category_to_interactions, chain, chain_unit_id_to_sequence_position[chain],chain_modified[chain]))
+            print(json.dumps(output),file=sys.stderr)
 
         # else:
             # print('Output format %s not recognized' % output_format)
